@@ -10,20 +10,34 @@ __global__ void saxpy(float a, float *x, float *y) {
     }
 }
 
-int main(void) {
-    float *x, *y, a, *dx, *dy;
-    size_t size = N * sizeof(float);
-    
-    cudaMalloc((void **) &dx, size);
-    cudaMalloc((void **) &dy, size);
+__global__ void add(int *a, int *b, int *c) {
+    *c = *a + *b;
+}
+int main(void) {    
+    int a, b, c; //host copies
+    int *da, *db, *dc;
+    int size = sizeof(int);
 
-    cudaMemcpy(dx, x, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(dy, y, size, cudaMemcpyHostToDevice);
 
-    saxpy<<<N/256, 256>>>(a, dx, dy);
 
-    cudaMemcpy(y, dy, size, cudaMemcpyDeviceToHost);
-    printf("value of y: %d", y);
-    cudaFree(dx);
-    cudaFree(dy);
+    cudaMalloc((void **) &da, size);
+    cudaMalloc((void **) &db, size);
+    cudaMalloc((void **) &dc, size);
+
+    //setup input values
+    a = 2;
+    b = 7;
+
+    cudaMemcpy(da, &a, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(db, &b, size, cudaMemcpyHostToDevice);
+
+    add<<<1, 1>>>(da, db, dc);
+
+    cudaMemcpy(&c, dc, size, cudaMemcpyDeviceToHost);
+
+    printf("Value of c: %d", c);
+    cudaFree(da);
+    cudaFree(db);
+    cudaFree(dc);
+    return 0;
 }
