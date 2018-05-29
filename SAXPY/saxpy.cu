@@ -23,7 +23,7 @@ int main(void) {
     saxpy<<<N/256, 256>>>(a, dx, dy);
 
     cudaMemcpy(y, dy, size, cudaMemcpyDeviceToHost);
-
+    printf("value of y: %d", y);
     cudaFree(dx);
     cudaFree(dy);
 }
