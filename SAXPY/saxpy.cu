@@ -1,6 +1,6 @@
 #include<stdio.h>
 
-#define N 20480
+#define N 2048
 
 //kernel
 __global__ void saxpy(float a, float *x, float *y) {
