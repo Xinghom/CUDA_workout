@@ -52,7 +52,7 @@ int main(void) {
         y[i] = 2.0f;
     }
 
-    add<<<1,1>>>(N, x, y);
+    add<<<1,256>>>(N, x, y);
 
     //wait for GPU
     cudaDeviceSynchronize();
