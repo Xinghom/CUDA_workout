@@ -20,4 +20,4 @@
 ###SBATCH --mail-type=All
 
 module load cuda
-./saxpy
+nvprof ./saxpy

@@ -6,13 +6,6 @@
 
 
 //kernel
-__global__ void saxpy(float a, float *x, float *y) {
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if (i < N) {
-    	y[i] += a*x[i];
-    }
-}
-
 __global__ void add(int n, float *x, float *y) {
     for (int i = 0; i < n; i++)
         y[i] = x[i] + y[i];
