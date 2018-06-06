@@ -4,16 +4,14 @@
 #define COL 1000
 
 __global__ void mat_vect(int *a, int *b, int *c, int m, int n) {
-    int row = blockIdx.y * blockDim.y + threadIdx.y; 
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     int sum = 0;
     
-    if( col < n && row < m) 
-    {
+    if (col < n){
         for(int i = 0; i < n; i++) 
         {
             printf("matrix value: %d, vect value: %d \n", a[row * n + i], b[i]);
-            sum += a[row * n + i] * b[i];
+            sum += a[i * m + col] * b[i];
             //printf("cur sum: %d\n", sum);
         }
 	//printf("col value is : %d\n", col);
@@ -63,7 +61,7 @@ int main() {
     TestMatrixGenerate(d_m, ROW, COL);
     TestVectorGenerate(d_v, ROW);
     int blockSize = 256;
-    mat_vect<<<1, blockSize>>>(d_m, d_v, d_res, ROW, COL);
+    mat_vect<<<COL/blockSize + 1, blockSize>>>(d_m, d_v, d_res, ROW, COL);
     
     cudaDeviceSynchronize();
     
