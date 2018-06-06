@@ -7,15 +7,17 @@ __global__ void mat_vect(int *a, int *b, int *c, int m, int n) {
     int row = blockIdx.y * blockDim.y + threadIdx.y; 
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     int sum = 0;
+    
     if( col < n && row < m) 
     {
         for(int i = 0; i < n; i++) 
         {
+            printf("matrix value: %d, vect value: %d \n", a[row * n + i], b[i]);
             sum += a[row * n + i] * b[i];
-            printf("cur sum: %d\n", sum);
+            //printf("cur sum: %d\n", sum);
         }
-	printf("col value is : %d\n", col);
-	printf("sum value: %d\n", sum);
+	//printf("col value is : %d\n", col);
+	//printf("sum value: %d\n", sum);
         c[col] = sum;
     }
 }
@@ -25,7 +27,7 @@ void TestMatrixGenerate(int* matrix, int row, int col) {
     //printf("Col: %d", col);
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
-            matrix[i * col + j] = (j + 1) + i * col; 
+            matrix[i * col + j] = (j + 1) + i * row; 
       	    //printf("%d ", matrix[i*col + j]);
         }
         //printf("\n");
@@ -58,8 +60,8 @@ int main() {
     cudaMallocManaged(&d_v, ROW*sizeof(int));
     cudaMallocManaged(&d_res, ROW*sizeof(int));
     // init d_m, d_v on the host
-    //TestMatrixGenerate(d_m, ROW, COL);
-    //TestVectorGenerate(d_v, ROW);
+    TestMatrixGenerate(d_m, ROW, COL);
+    TestVectorGenerate(d_v, ROW);
     int blockSize = 256;
     mat_vect<<<1, blockSize>>>(d_m, d_v, d_res, ROW, COL);
     
