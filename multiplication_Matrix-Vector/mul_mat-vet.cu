@@ -17,19 +17,23 @@ __global__ void mat_vect(int *a, int *b, int *c, int m, int n) {
     }
 }
 
-void TestMatrixGenerate(int *matrix, int row, int col) {
+void TestMatrixGenerate(int* matrix, int row, int col) {
+    printf("Row: %d", row);
+    printf("Col: %d", col);
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
             matrix[i * col + j] = (j + 1) + i * col; 
-            printf("%d ", matrix[i*col + j];)
+            printf("%d ", matrix[i*col + j]);
         }
         printf("\n");
     }
 }
 
 int main() {
-    int* matrix;
-    TestMatrixGenerate((int*) matrix, ROW, COL);
+    int m[ROW*COL];
+    int *ptr_m;
+    ptr_m = m;
+    TestMatrixGenerate(ptr_m, ROW, COL);
     
     
 
