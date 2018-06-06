@@ -12,7 +12,10 @@ __global__ void mat_vect(int *a, int *b, int *c, int m, int n) {
         for(int i = 0; i < n; i++) 
         {
             sum += a[row * n + i] * b[i];
+            printf("cur sum: %d\n", sum);
         }
+	printf("col value is : %d\n", col);
+	printf("sum value: %d\n", sum);
         c[col] = sum;
     }
 }
@@ -36,13 +39,16 @@ void TestVectorGenerate(int* vector, int row) {
     }
 }
 
+
 int main() {
     int m[ROW*COL];
     int v[COL];
+    int res[COL];
 
-    int *ptr_m, *ptr_v;
+    int *ptr_m, *ptr_v, *ptr_res;
     ptr_m = m;
     ptr_v = v;
+    ptr_res = res;
     TestMatrixGenerate(ptr_m, ROW, COL);
     TestVectorGenerate(ptr_v, ROW);
     
@@ -52,16 +58,21 @@ int main() {
     cudaMallocManaged(&d_v, ROW*sizeof(int));
     cudaMallocManaged(&d_res, ROW*sizeof(int));
     // init d_m, d_v on the host
-    TestMatrixGenerate(d_m, ROW, COL);
-    TestVectorGenerate(d_v, ROW);
+    //TestMatrixGenerate(d_m, ROW, COL);
+    //TestVectorGenerate(d_v, ROW);
     int blockSize = 256;
     mat_vect<<<1, blockSize>>>(d_m, d_v, d_res, ROW, COL);
     
     cudaDeviceSynchronize();
     
-    for (int i = 0; i < ROW; i++) {
-        printf("%d", d_res[i]);
-    }
-    printf("\n");
+    // result verify
+    printf("the front 10 elements results: \n");
+    for (int i = 0; i < 10; i++) {
+    	printf("%d ", d_res[i]);
+    }   
+    
+    cudaFree(d_m);
+    cudaFree(d_v);
+    cudaFree(d_res);
     return 0;
 }
