@@ -43,9 +43,25 @@ int main() {
     int *ptr_m, *ptr_v;
     ptr_m = m;
     ptr_v = v;
-    TestMatrixGenerate(ptr_m, ROW, COL);
-    TestVectorGenerate(ptr_v, ROW);
+    //TestMatrixGenerate(ptr_m, ROW, COL);
+    //TestVectorGenerate(ptr_v, ROW);
     
-
+    int *d_m, *d_v;
+    int *d_res;
+    cudaMallocManaged(&d_m, ROW*COL*sizeof(int));
+    cudaMallocManaged(&d_v, ROW*sizeof(int));
+    cudaMallocManaged(&d_res, ROW*sizeof(int));
+    // init d_m, d_v on the host
+    TestMatrixGenerate(d_m, ROW, COL);
+    TestVectorGenerate(d_v, ROW);
+    int blockSize = 256;
+    mat_vect<<<1, blockSize>>>(d_m, d_v, d_res, ROW, COL)
+    
+    cudaDeviceSynchronize();
+    
+    for (int i = 0; i < ROW; i++) {
+        printf("%d", d_res[i]);
+    }
+    print("\n");
     return 0;
 }
