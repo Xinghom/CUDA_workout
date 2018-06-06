@@ -7,8 +7,8 @@ report the results.
 
 #include<stdio.h>
 
-void main() {
-    int nDevives;
+int main() {
+    int nDevices;
     cudaGetDeviceCount(&nDevices);
     for (int i = 0; i < nDevices; i++) {
         cudaDeviceProp prop;
@@ -19,8 +19,7 @@ void main() {
         printf("  - Mem Bus Width (bits): %d\n", prop.memoryBusWidth);
         float MemPeakBandWidth = 2.0 * prop.memoryClockRate * (prop.memoryBusWidth/8) / 1.0e6;
         printf("  - Mem Peak Bandwidth(GB/s): %f\n", MemPeakBandWidth);
-        printf("*** Compute Capability: ");
-        printf(prop.major.minor);
-        printf("\n");
+        printf("*** Compute Capability: %d\n", prop.major);
     }
+    return 0;
 }
